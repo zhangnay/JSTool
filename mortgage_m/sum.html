@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="content-language" content="zh-CN">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<title>房贷计算器</title>
+<head>
+    <link rel="stylesheet" href="sum/style.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="sum/main.css">
+    <style>
+        select{
+            color: #000!important
+        }
+    </style>
+
+    <!-- <script src="/Public/sum/jquery-1.11.3.min.js" type="text/javascript" charset="utf-8"></script> -->
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+       
+
+        lilv_array = new Array; 
+        //2019年3月1日基准利率
+        lilv_array[5] = new Array;
+        lilv_array[5][1] = new Array;
+        lilv_array[5][2] = new Array;
+        lilv_array[5][1][1] = 0.0435;//商贷1年 4.35%
+        lilv_array[5][1][3] = 0.0475;//商贷1～3年 4.75%
+        lilv_array[5][1][5] = 0.0475;//商贷 3～5年 4.75%
+        lilv_array[5][1][10] = 0.049;//商贷 5-30年 4.90%
+        lilv_array[5][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[5][2][10] = 0.0325;//公积金 5-30年 3.25%
+        //2019年3月1日利率下限（7折）
+        lilv_array[6] = new Array;
+        lilv_array[6][1] = new Array;
+        lilv_array[6][2] = new Array;
+        lilv_array[6][1][1] = 0.03045;//商贷1年 3.045%
+        lilv_array[6][1][3] = 0.03325;//商贷1～3年 3.325%
+        lilv_array[6][1][5] = 0.03325;//商贷 3～5年 3.325%
+        lilv_array[6][1][10] = 0.0343;//商贷 5-30年 3.43%
+        lilv_array[6][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[6][2][10] = 0.0325;//公积金 5-30年 3.25%
+        //2019年3月1日利率下限（85折）
+        lilv_array[7] = new Array;
+        lilv_array[7][1] = new Array;
+        lilv_array[7][2] = new Array;
+        lilv_array[7][1][1] = 0.03698;//商贷1年 3.698%
+        lilv_array[7][1][3] = 0.04038;//商贷1～3年 4.038%
+        lilv_array[7][1][5] = 0.04038;//商贷 3～5年 4.038%
+        lilv_array[7][1][10] = 0.04165;//商贷 5-30年 4.165%
+        lilv_array[7][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[7][2][10] = 0.0325;//公积金 5-30年 3.25%
+        //2019年3月1日利率上限（1.1倍）
+        lilv_array[8] = new Array;
+        lilv_array[8][1] = new Array;
+        lilv_array[8][2] = new Array;
+        lilv_array[8][1][1] = 0.04785;//商贷1年 4.785%
+        lilv_array[8][1][3] = 0.05225;//商贷1～3年 5.225%
+        lilv_array[8][1][5] = 0.05225;//商贷 3～5年 5.225%
+        lilv_array[8][1][10] = 0.0539;//商贷 5-30年 5.39%
+        lilv_array[8][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[8][2][10] = 0.0325;//公积金 5-30年 3.25%
+        //2019年3月1日利率上限（1.2倍）
+        lilv_array[9] = new Array;
+        lilv_array[9][1] = new Array;
+        lilv_array[9][2] = new Array;
+        lilv_array[9][1][1] = 0.05220;//商贷1年 5.220%
+        lilv_array[9][1][3] = 0.05700;//商贷1～3年 5.700%
+        lilv_array[9][1][5] = 0.05700;//商贷 3～5年 5.700%
+        lilv_array[9][1][10] = 0.0588;//商贷 5-30年 5.880%
+        lilv_array[9][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[9][2][10] = 0.0325;//公积金 5-30年 3.25%
+        //2019年3月1日利率上限（1.3倍）
+        lilv_array[10] = new Array;
+        lilv_array[10][1] = new Array;
+        lilv_array[10][2] = new Array;
+        lilv_array[10][1][1] = 0.05655;//商贷1年 5.655%
+        lilv_array[10][1][3] = 0.06175;//商贷1～3年 6.175%
+        lilv_array[10][1][5] = 0.06175;//商贷 3～5年 6.175%
+        lilv_array[10][1][10] = 0.0637;//商贷 5-30年 6.370%
+        lilv_array[10][2][5] = 0.0275;//公积金 1～5年 2.75%
+        lilv_array[10][2][10] = 0.0325;//公积金 5-30年 3.25%
+    </script>
+    <script src="sum/fdjsq.js" type="text/javascript" charset="utf-8"></script>  
+</head>
+<body>
+    <div class="w1200 calculation_box zpd clear_both">		
+        <div id="calculate01" class="main">
+            <h4>房贷计算器</h4>
+			<form name="calc1">
+				<table>
+					<tbody>
+                        <tr>
+
+
+						<td valign="top" class="tdl" id="sum">
+							<div class="mainl">
+								<div class="h1">请您填写：</div>
+								<div class="mainltr01">
+								<div class="mainltr01tr">
+                                    <div class="h2">贷款类别：</div>
+                                    <label class="radio_label">
+                                        <input type="radio" value="1" name="typeRadio" checked="checked" onclick="exc_zuhe(this.form,this.value);"> 
+                                        商业贷款
+                                    </label>
+                                    <label class="radio_label">
+                                        <input type="radio" value="2" name="typeRadio" onclick="exc_zuhe(this.form,this.value);"> 
+                                        公积金贷款
+                                    </label>
+                                    <label class="radio_label">
+                                        <input type="radio" value="3" name="typeRadio" onclick="exc_zuhe(this.form,this.value);"> 
+                                        组合型贷款
+                                    </label>
+									<input type="hidden" name="type" value="1" id="type">
+								</div>
+								<ul id="calc1_zuhe" style="display: none">
+									<li>商业性：<input name="total_sy" maxlength="8" size="8" type="text" class="guestbook01">元</li>
+									<li>公积金：<input name="total_gjj" maxlength="8" size="8" type="text" class="guestbook01">元</li>
+								</ul>
+								</div>
+								<div class="mainltr01" id="calc1_ctype">
+									<div class="h2">计算方式：</div>
+									<ul>
+										<li>
+                                            <label class="radio_label"><input id="calc1_radio1" onclick="exc_js(this.form,1);" type="radio" checked="checked" value="1" name="jisuan_radio"> 根据面积、单价计算</label>
+                                        </li>
+										<span id="calc1_js_div1" style="display: block">
+										<li>单价：<input name="price" type="text" class="guestbook01" "="">元/平米</li>
+											<li>面积：<input name="sqm" type="text" class="guestbook01" "="">平方米</li>
+											<li>按揭成数：
+												<select size="1" name="anjie" style="color:#f00;">
+													<option value="9">9成</option>
+													<option value="8">8成</option>
+													<option value="7" selected="true">7成</option>
+													<option value="6">6成</option>
+													<option value="5">5成</option>
+													<option value="4">4成</option>
+													<option value="3">3成</option>
+													<option value="2">2成</option>
+												</select>
+											</li>													
+                                        </span>
+										<li class="ts_li">
+                                            <label class="radio_label"><input id="calc1_radio2" onclick="exc_js(this.form,2);" type="radio" value="2" name="jisuan_radio"> 根据贷款总额计算</label>
+                                        </li>
+										<li id="calc1_js_div2" style="display: none">
+                                            贷款总额：<input maxlength="8" size="10" name="daikuan_total000" class="guestbook01">万元
+                                        </li>
+									</ul>
+								</div>
+								<div class="mainltr01">
+                                    <div class="h2">按揭年数：</div>
+									<select id="years" size="1" name="years" style="color:#f00;" onchange="ShowLilvNew(this.value,document.calc1.lilv.value)">
+										<option value="1">1年（12期）</option>
+										<option value="2">2年（24期）</option>
+										<option value="3">3年（36期）</option>
+										<option value="4">4年（48期）</option>
+										<option value="5">5年（60期）</option>
+										<option value="6">6年（72期）</option>
+										<option value="7">7年（84期）</option>
+										<option value="8">8年（96期）</option>
+										<option value="9">9年（108期）</option>
+										<option value="10">10年（120期）</option>
+										<option value="11">11年（132期）</option>
+										<option value="12">12年（144期）</option>
+										<option value="13">13年（156期）</option>
+										<option value="14">14年（168期）</option>
+										<option value="15">15年（180期）</option>
+										<option value="16">16年（192期）</option>
+										<option value="17">17年（204期）</option>
+										<option value="18">18年（216期）</option>
+										<option value="19">19年（228期）</option>
+										<option value="20" selected="true">20年（240期）</option>
+										<option value="25">25年（300期）</option>
+										<option value="30">30年（360期）</option>
+									</select>
+								</div>
+								<div class="mainltr01">
+									<div class="mainltr01tr">
+                                        <div class="h2">贷款利率：</div>
+										<select id="lilv" name="lilv" style="color:#f00;" onchange="ShowLilvNew(document.calc1.years.value,this.value)">
+                                            <option value="10">2019年3月1日利率上限（1.3倍）</option>
+                                            <option value="9">2019年3月1日利率上限（1.2倍）</option>
+                                            <option value="8">2019年3月1日利率上限（1.1倍）</option>
+                                            <option value="7">2019年3月1日利率下限（85折）</option>
+                                            <option value="6">2019年3月1日利率下限（7折）</option>
+                                            <option value="5" selected="true">2019年3月1日基准利率</option>
+                                      </select>
+                                      <ul class="ts_ul">
+										<li id="singlelv_li" style="display:block">
+                                            <input id="singlelv" type="text" class="red" style="width:50px;" value="4.90"> %
+                                        </li>
+										<li id="sdlv_li" style="display:none">商 业：
+                                            <input id="sdlv" type="text" class="red" style="width:50px;" value="4.90"> %
+                                        </li>							 
+                                        <li id="gjlv_li" style="display:none">公积金：
+                                            <input id="gjlv" type="text" class="red" style="width:50px;" value="3.25"> %
+                                        </li>
+									</ul>
+									</div>
+									
+								</div>
+								<div class="mainltr01">
+                                    <div class="h2">还款方式：</div>
+                                    <label class="radio_label">
+                                        <input id="dengeben1" type="radio" name="dengeben" value="radiobutton" checked="" onclick="chanage_type_mm()">
+                                        等额本息
+                                    </label>
+                                    <label class="radio_label">
+                                        <input id="dengeben2" type="radio" name="dengeben" value="radiobutton" onclick="chanage_type_mm()">
+                                        等额本金
+                                    </label>
+                                </div>
+                                <div class="mainltr02">
+                                    <a href="javascript:ext_total(document.calc1);">开始计算</a>
+                                    <a href="javascript:formReset(document.calc1);">重新填写</a>
+                                </div>
+							</div>
+						</td>
+
+
+						<td valign="middle"></td>
+
+
+                        <style type="text/css">
+                            .calculation_box #calculate01 .tdr{
+                                width: 100%;border: none;
+                                padding: 20px;
+                                box-sizing: border-box;
+                                margin: 90px 0px 0 0px ;
+                            }
+
+                            .h1 span{
+                                width: 24px;height: 24px;border-radius: 50%;
+                                border: 1px solid gray;
+                                display: inline-block;
+                                float: right;
+                                overflow: hidden;
+                                display: none;  
+                            }
+                            .h1 span:after{
+                                content: '';
+                                width: 28px;height: 28px;
+                                outline: 10px solid gray;
+                                outline-offset: -23px;
+                                margin:-2px -2px 0 0px;
+                                float: right;
+                                /*background:#4987a1 center center no-repeat;*/
+                                transform:rotate(45deg); 
+
+                            }
+                            .close{
+                                width: 80%;height: 30px;line-height: 30px;text-align: center;
+                                margin: 10px 10%;
+                                background: white;
+                                border: 1px solid gray;
+                                border-radius: 5px;
+                                display: inline-block;
+                            }
+                            #result{
+                                position: absolute;top: 0;left: 0;
+                                /*transform: translateY(-50%);*/
+                                /*display: none;*/
+                                /*margin: 10px auto;*/
+                                background: white;
+                            }
+                        </style>
+                        
+						<td valign="top" class="tdr"  id="result" >
+							<div class="mainr">
+								<div class="h1">查看结果： <span onclick="close()"></span></div>
+								<div class="mainrtr01">
+									<ul class="jg_ul">
+										<li><span>房款总额：</span><input name="fangkuan_total1" type="text" class="guestbook02" readonly="true">元</li>
+										<li><span>贷款总额：</span><input name="daikuan_total1" type="text" class="guestbook02" readonly="true">元</li>
+										<li><span>还款总额：</span><input name="all_total1" type="text" class="guestbook02" readonly="true">元</li>
+										<li><span>支付利息款：</span><input name="accrual1" type="text" class="guestbook02" readonly="true">元</li>
+										<li><span>首期付款：</span><input name="money_first1" type="text" class="guestbook02" readonly="true">元</li>
+										<li><span>贷款月数：</span><input name="month1" type="text" class="guestbook02" readonly="true"></li>
+										<li id="type1_mm1"><span>月均还款：</span><input name="month_money1" type="text" class="guestbook02" readonly="true">元</li>
+									</ul>
+									<div id="calc1_benjin" style="display: none;">
+										<input type="hidden" name="fangkuan_total2">
+										<input type="hidden" name="daikuan_total2">
+										<input type="hidden" name="all_total2">
+										<input type="hidden" name="accrual2">
+										<input type="hidden" name="money_first2">
+										<input type="hidden" name="month2">
+										<input type="hidden" name="month_money2">
+									</div>
+									<div class="mainrtr01tr" style="text-align:right;">
+                                        *以上结果仅供参考
+                                    </div>
+                                    <span class="close" onclick="resum()">重新计算</span>
+                                </div>
+							</div>
+						</td>
+					</tr>
+                    <script type="text/javascript">
+                            function resum(){
+                                console.log('s');
+                                document.getElementById("result").style.display="none";
+                                document.getElementById("sum").style.filter="blur(0px)";
+                            }
+                             
+                            document.getElementById("result").style.display="none";
+                            // alert("s");
+                        </script>
+                     
+				    </tbody>
+                </table>						
+			</form>
+		</div>
+    </div>
+</body>
+</html>
